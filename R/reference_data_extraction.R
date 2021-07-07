@@ -9,6 +9,7 @@
 #'
 #' @import tidyselect
 #' @import rlang
+#' @keywords internal
 extract_carbon_calibration_data <- function(data_list) {
   
   # input should be the list from stackEddy
@@ -17,7 +18,7 @@ extract_carbon_calibration_data <- function(data_list) {
   }
   
   # extract desired data from data list.
-  data <- data_list[[1]] %>% 
+  data <- data_list %>% 
     dplyr::select(.data$verticalPosition, .data$timeBgn, .data$timeEnd,
            tidyselect::starts_with("data.isoCo2.dlta13CCo2"),
            tidyselect::starts_with("data.isoCo2.rtioMoleDryCo2")) %>%
@@ -54,7 +55,7 @@ extract_carbon_calibration_data <- function(data_list) {
 #'               function (use "by_site)
 #'
 #' @return Returns data frame of required variables.
-#'
+#' @keywords internal
 extract_water_calibration_data <- function(data_list, ucrt_list = NULL,
                                            standard, ucrt_source = "data",
                                            method = "by_site") {

@@ -13,7 +13,7 @@ write_carbon_reference_data(inname, outname, site, calDf)
 
 \item{site}{NEON 4-letter site code.}
 
-\item{calDf}{Calibration data frame - 
+\item{calDf}{Calibration data frame -
 this is the output from fit_carbon_regression}
 }
 \value{
@@ -25,3 +25,4 @@ write_carbon_reference_data
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
+\keyword{internal}

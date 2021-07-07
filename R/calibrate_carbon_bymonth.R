@@ -1,5 +1,6 @@
 #' calibrate_carbon_bymonth
 #'
+#' `r lifecycle::badge("stable")`
 #' This function drives a workflow that reads in NEON carbon isotope data
 #' of atmospheric CO2, calibrates it to the VPDB scale, and (optionally)
 #' writes the calibrated data to a new HDF5 file. Two different approaches
@@ -13,7 +14,7 @@
 #' (Fiorella et al. 2021; JGR-Biogeosciences).
 #' 
 #' The 'linreg' method simply takes measured and reference d13C and CO2 values
-#' and generates a transfer function between them using \code{lm()}. For the
+#' and generates a transfer function between them using `lm()`. For the
 #' gain-and-offset method, d13C and CO2 values are converted to 12CO2 and 13CO2
 #' mole fractions. Gain and offset parameters are calculated for each isotopologue
 #' independently, and are analogous to regression slope and intercepts, but jointly 
@@ -107,10 +108,10 @@ calibrate_carbon_bymonth <- function(inname,
   # Extract reference data from input HDF5 file.
   #-----------------------------------------------------------
   # pull all carbon isotope data into a list.
-  ciso <- neonUtilities::stackEddy(inname, level = 'dp01', avg = 9)
+  ciso <- ingest_data(inname, analyte = 'Co2')
   
   # extract the data we need from ciso list
-  refe <- extract_carbon_calibration_data(ciso)
+  refe <- extract_carbon_calibration_data(ciso$refe_stacked)
   
   # Okay this function now needs some work. *************
   if (correct_refData == TRUE) {

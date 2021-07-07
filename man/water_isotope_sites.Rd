@@ -6,9 +6,13 @@
 \usage{
 water_isotope_sites()
 }
+\value{
+A vector listing NEON sites measuring water vapor isotope ratios.
+}
 \description{
 water_isotope_sites
 }
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
+\keyword{internal}
