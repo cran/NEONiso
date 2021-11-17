@@ -25,4 +25,3 @@ have been calibrated using this package.
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
-\keyword{internal}

@@ -268,7 +268,7 @@ fit_carbon_regression <- function(ref_data, method, calibration_half_width) {
 #'        for d13C and CO2 values.
 #'
 #' @importFrom stats coef lm
-#' @keywords internal
+#' 
 fit_water_regression <- function(stds, calibration_half_width, slope_tolerance, r2_thres) {
   # do some light validation of these points.
   stds <- stds %>%
@@ -403,6 +403,8 @@ fit_water_regression <- function(stds, calibration_half_width, slope_tolerance, 
         hyd_cal_rsq[i]    <- NA
       }
     }
+    
+    print(start_time)
     
     # start time is numeric here at some point - hence, format not necessary 
     # to be specified below.

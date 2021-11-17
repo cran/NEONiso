@@ -16,7 +16,6 @@ fout <- '/dev/null'
 
 test_that("calibrate_carbon returns 'Extracting data' if write_to_file = FALSE" ,{
   
-  skip_on_cran()
   # these tests could probably be made more useful!!
   expect_output(calibrate_carbon(fin, fout, "ONAQ",
                    method = "Bowling_2003",
@@ -45,7 +44,6 @@ test_that("calibrate_carbon returns 'Extracting data' if write_to_file = FALSE" 
 
 test_that("calibrate_carbon_bymonth returns 'Extracting data' if write_to_file = FALSE", {
   
-  skip_on_cran()
   # these tests could probably be made more useful!!
   expect_output(calibrate_carbon_bymonth(fin, fout, "ONAQ",
                                  method = "Bowling_2003",

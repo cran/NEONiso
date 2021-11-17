@@ -24,4 +24,3 @@ convert_POSIXct_to_NEONhdf5_time(Sys.time())
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
-\keyword{internal}

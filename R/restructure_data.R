@@ -7,8 +7,10 @@
 #' @param analyte Carbon (Co2) or water (H2o)?
 #'
 #' @return List of data frames, taken from files specified in `inname`
-#' @keywords internal
+#' @export
+#'
 #' @importFrom stats setNames
+#' @importFrom utils packageVersion
 ingest_data <- function(inname, analyte) {
   
   # this function needs to:
@@ -21,7 +23,7 @@ ingest_data <- function(inname, analyte) {
   
   if (analyte == 'Co2') {
     
-    if (utils::packageVersion("neonUtilities") >= "2.1.1") {
+    if (packageVersion("neonUtilities") >= "2.1.1") {
       data <- neonUtilities::stackEddy(inname, avg = 9, level = 'dp01', var = 'isoCo2')[[1]]
     } else {
       data <- neonUtilities::stackEddy(inname, avg = 9, level = 'dp01')[[1]]
@@ -113,7 +115,8 @@ ingest_data <- function(inname, analyte) {
 #' @param group Data, ucrt, or qfqm?
 #' 
 #' @return data.frame formatted for output to hdf5 file.
-#' @keywords internal
+#' @export
+#'
 restructure_carbon_variables <- function(dataframe,
                                         varname,
                                         mode,
@@ -217,7 +220,8 @@ restructure_carbon_variables <- function(dataframe,
 #' @param mode Are we fixing a reference data frame or an ambient data frame?
 #' 
 #' @return data.frame formatted for output to hdf5 file.
-#' @keywords internal
+#' @export
+#'
 restructure_water_variables <- function(dataframe,
                                         varname,
                                         mode) {
@@ -307,7 +311,7 @@ restructure_water_variables <- function(dataframe,
 #' @param analyte Carbon (Co2) or water (H2o)?
 #'
 #' @return List of data extracted from files listed in inpath.
-#' @keywords internal
+#'
 restructure_ambient_data <- function(inpath, analyte) {
   # stack data available for a given site into a single timeseries.
   # a target for improvement: don't list each required variable separately,
@@ -396,7 +400,7 @@ restructure_ambient_data <- function(inpath, analyte) {
 #' @param analyte Carbon (Co2) or water (H2o)?
 #'
 #' @return List of data extracted from files listed in inpath.
-#' @keywords internal
+#'
 restructure_ambient_data2 <- function(inpath, analyte) {
   # stack data available for a given site into a single timeseries.
   # a target for improvement: don't list each required variable separately,

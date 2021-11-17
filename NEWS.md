@@ -1,3 +1,10 @@
+# NEONiso 0.5.2
+
+* Fixes a bug where an rhdf5 function was not being imported properly,
+generating warnings and errors on CRAN.
+* Updates manage_local_ec_archive to avoid a scenario that was creating
+duplicate files, thereby being more efficient with drive space.
+
 # NEONiso 0.5.1
 
 * This update takes advantage of upgrades to the stackEddy function 

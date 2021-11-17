@@ -22,4 +22,3 @@ data.frame formatted for output to hdf5 file.
 \description{
 restructure_carbon_variables
 }
-\keyword{internal}

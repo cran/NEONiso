@@ -25,4 +25,3 @@ write_carbon_reference_data2
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
-\keyword{internal}

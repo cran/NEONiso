@@ -14,7 +14,6 @@ terrestrial_core_sites
 }
 \examples{
 terrestrial_core_sites()
-
 }
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}

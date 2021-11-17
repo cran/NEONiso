@@ -20,4 +20,3 @@ data.frame formatted for output to hdf5 file.
 \description{
 restructure_water_variables
 }
-\keyword{internal}

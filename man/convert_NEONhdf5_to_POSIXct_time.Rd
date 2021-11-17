@@ -22,4 +22,3 @@ convert_NEONhdf5_to_POSIXct_time("2019-06-01T12:00:00.000Z")
 \author{
 Rich Fiorella \email{rich.fiorella@utah.edu}
 }
-\keyword{internal}
