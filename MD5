@@ -1,13 +1,13 @@
-beb2966fcc21884d09793f8233b13ae9 *DESCRIPTION
+1bfb44e2c597956c7430bdfeb879c88e *DESCRIPTION
 2f5ad6824386531228b90213dba798f1 *NAMESPACE
-8b49aff17d470a420c733df4a526ead6 *NEWS.md
+5ccb0e28e0381fce4ba5c5a278504a00 *NEWS.md
 ad98d223e4a34d9ac0ee7e774b2551c7 *R/NEONiso.R
 bb3f17d84a959a98279f09e995db33ec *R/calibrate_ambient_carbon_Bowling2003.R
 6b1df91f8906ddac2034689821d52ffb *R/calibrate_ambient_carbon_linreg.R
 433f7d3fa537fc41ea28154860f1f6fe *R/calibrate_ambient_water_isotopes.R
 ff4490969fdcadf9819536416e0ace12 *R/calibrate_carbon.R
 147296568b381d6b8e767633b87b5597 *R/calibrate_carbon_bymonth.R
-44c8bd7e1b92c3962d220a70446e70de *R/calibrate_standards_carbon.R
+485921ee6319b7d64d014a602db34852 *R/calibrate_standards_carbon.R
 79faa4e17b0c17da4eb58d84f8e2ac5e *R/calibrate_standards_water.R
 7f883b5b191df586f7375e05ec194613 *R/calibrate_water.R
 9b14489c6afead362f8a0e5fb8a3baaa *R/calibrate_water_linreg_bymonth.R
@@ -22,7 +22,7 @@ b40544d0e7be895858f054b0478514ba *R/reference_data_selection.R
 99175961f6247845c6adbdd94908424d *R/time_functions.R
 f09e005addcee3ea371180023dc9f3f6 *R/utility_functions.R
 b107907aea9969e1ffce1baf23b21221 *README.md
-0883b2e52a2707ae1c7c3b0cc293b77a *build/vignette.rds
+a653006e6e38c1ac32dab2864f8d1f88 *build/vignette.rds
 81751b6f4386124a091eaac628275f84 *inst/CITATION
 ed16a1fdead4bb44a12087d111c760fd *inst/doc/example_workflow.R
 77e5ea03a5a2c917b9c56f5cdc798660 *inst/doc/example_workflow.Rmd
