@@ -12,7 +12,7 @@
 
 
 
-<title>Getting Started with NEONiso</title>
+<title>Reference Corrections</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -330,92 +330,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Getting Started with NEONiso</h1>
+<h1 class="title toc-ignore">Reference Corrections</h1>
 
 
 
-<p>Rich Fiorella; updated: February 26, 2021</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NEONiso)</span></code></pre></div>
-<div id="neoniso-quickstart-an-example-workflow" class="section level1">
-<h1>NEONiso quickstart: an example workflow</h1>
-<p>The goal of this document is to help NEONiso users up and running
-with a local copy of calibrated NEON atmospheric isotope data.
-Currently, NEONiso has mature functions for handling and processing
-atmospheric CO2 isotope data, and functions to work with water isotope
-data are earlier in their development. Therefore, this document will
-focus on the use of the functions for working with atmospheric CO2
-data.</p>
-<p>This document will cover three important steps of working with NEON
-isotope data: 1) retrieving data through the NEON API, 2) calibrating
-the data, and 3) running a set of diagnostic scripts to inspect the
-data.</p>
-<div id="neon-data-retrieval" class="section level2">
-<h2>NEON Data Retrieval</h2>
-<p>Atmospheric isotope data products from NEON are included as part of
-the eddy covariance bundled data product (ID DP4.00200.001). NEONiso
-includes a function for downloading and managing a local archive of eddy
-covariance bundles: manage_local_EC_archive. For example, the following
-command will download all of the data for the ONAQ site:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">manage_local_EC_archive</span>(<span class="at">file_dir =</span> <span class="st">&quot;~/Desktop&quot;</span>, <span class="at">get =</span> <span class="cn">TRUE</span>, <span class="at">unzip_files =</span> <span class="cn">TRUE</span>, <span class="at">sites =</span> <span class="st">&quot;ONAQ&quot;</span>)</span></code></pre></div>
-<p>The sites argument can also be a vector of multiple sites you’d like
-to request, or “all” to pull data from all of the sites (note this will
-be &gt;100 GB and growing as of February 2021). The EC bundles are
-gzipped on the remote server, and this function will also unzip these
-files after they’ve been downloaded.</p>
-</div>
-<div id="data-calibration" class="section level2">
-<h2>Data calibration</h2>
-<p>Two methods are available to calibrate NEON Carbon isotope data and
-they take slightly different approaches: a) the ‘Bowling_2003’ method
-calibrates 12CO2 and 13CO2 mole fractions independently, while b) the
-‘linreg’ method calibrates d13C and CO2 directly without converting to
-isotopologue mole fractions. The method is specified as an argument to
-calibrate_carbon_bymonth(). Both methods yield very similar results, but
-the error and precision estimates are slightly better from the
-calibrate_carbon_Bowling2003() function (Fiorella et al., 2021;
-JGR-Biogeosciences) [<a href="https://doi.org/10.1029/2020JG005862" class="uri">https://doi.org/10.1029/2020JG005862</a>].</p>
-<p>The simplest way to interact with these functions is to place it
-inside of a for loop (or an apply statement), and call them for each
-file you would like to calibrate:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(fnames.out)) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calibrate_carbon_bymonth</span>(fnames[i],fnames.out[i],<span class="at">site=</span>site.code[i], <span class="at">method =</span> <span class="st">&quot;Bowling_2003&quot;</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Two different methods to calibrate are available: a) a ‘gain and
-offset’ regression using 12CO2 and 13CO2 mole fractions (method =
-‘Bowling_2003’, after Bowling et al. 2003) and b) a ‘direct’ linear
-regression of CO2 and d13C values to generate calibration transfer
-functions (method = ‘linreg’). The function ‘calibrate_carbon_bymonth()’
-assumes you have vectors of: 1) input file names (fnames), 2) output
-file names (fnames.out), and 3) 4 letter NEON site codes corresponding
-to each entry in input file names (fnames). An example of code to
-generate these three vectors is provided below:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.dir <span class="ot">&lt;-</span> <span class="st">&#39;/your/path/here/DP4_00200_001/&#39;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fnames <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> data.dir,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pattern =</span> <span class="st">&#39;.h5&#39;</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">recursive =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># unselect gz files.</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>fnames <span class="ot">&lt;-</span> fnames[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">&#39;.gz&#39;</span>,fnames)]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>fname.byfolder <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames, <span class="at">split=</span><span class="st">&quot;.&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>site.code  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fname.byfolder,<span class="st">&#39;[[&#39;</span>,<span class="dv">3</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect site.code in the environment: is it a vector that with repeated &quot;ONAQ&quot;?</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>fnames.tmp <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;.h5&quot;</span>,<span class="st">&quot;.calibrated.h5&quot;</span>,fnames)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>fnames.spt <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames.tmp, <span class="at">split =</span> <span class="st">&quot;/&quot;</span>)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>fnames.out <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fnames.spt, <span class="st">&#39;[[&#39;</span>, <span class="dv">7</span>)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># create new output directory</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>outpaths   <span class="ot">&lt;-</span> <span class="fu">paste0</span>(your_path,<span class="st">&#39;/ONAQ/output/&#39;</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">unique</span>(outpaths),dir.create,<span class="at">showWarnings=</span><span class="cn">FALSE</span>) <span class="co"># apply function used here to generalize in case you wanted to run all sites</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># update fnames.out to include desired output paths.</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>fnames.out <span class="ot">&lt;-</span> <span class="fu">paste0</span>(outpaths,<span class="st">&quot;/&quot;</span>,fnames.out)</span></code></pre></div>
-</div>
-</div>
 
 
 

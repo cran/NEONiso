@@ -52,9 +52,9 @@ modified version of amb_data_list that include calibrated ambient data.
 calibrate_ambient_carbon_Bowling2003
 }
 \author{
-Rich Fiorella \email{rich.fiorella@utah.edu}
+Rich Fiorella \email{rfiorella@lanl.gov}
 
-Function called by \code{calibrate_carbon_bymoth()} to apply
+Function called by \code{calibrate_carbon_bymonth()} to apply
 gain and offset parameters to the ambient datasets (000_0x0_09m and
 000_0x0_30m). This function should generally not be used independently,
 but should be used in coordination with

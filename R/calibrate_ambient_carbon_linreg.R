@@ -1,6 +1,6 @@
-#' calibrate_ambient_carbon_linreg
+  #' calibrate_ambient_carbon_linreg
 #'
-#' @author Rich Fiorella \email{rich.fiorella@@utah.edu}
+#' @author Rich Fiorella \email{rfiorella@@lanl.gov}
 #'
 #' Function called by `calibrate_ambient_carbon_linreg` to apply
 #' gain and offset parameters to the ambient datasets (000_0x0_09m and
@@ -52,6 +52,12 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
     d13C_ambdf <- amb_data_list$dlta13CCo2
     co2_ambdf  <- amb_data_list$rtioMoleDryCo2
 
+    if (!setequal(d13C_ambdf$timeBgn, co2_ambdf$timeBgn)) {
+      # get rows that are only present in both data frames
+      co2_ambdf   <- co2_ambdf[co2_ambdf$timeBgn %in% d13C_ambdf$timeBgn,]
+      d13C_ambdf <- d13C_ambdf[d13C_ambdf$timeBgn %in% co2_ambdf$timeBgn,]
+    }
+    
     # ensure that time variables are in POSIXct.
     amb_start_times <- convert_NEONhdf5_to_POSIXct_time(d13C_ambdf$timeBgn)
     amb_end_times   <- convert_NEONhdf5_to_POSIXct_time(d13C_ambdf$timeEnd)
@@ -117,7 +123,16 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
     # extract d13C and CO2 concentrations from the ambient data
     d13C_ambdf$mean_cal <- d13C_ambdf$mean
     co2_ambdf$mean_cal  <- co2_ambdf$mean
+    
+    # add columns to d13C_ambdf and co2_ambdf for uncertainty calculation
+    d13C_ambdf$cvloo   <- d13C_ambdf$mean
+    d13C_ambdf$cv5rmse <- d13C_ambdf$mean
+    d13C_ambdf$cv5mae  <- d13C_ambdf$mean
 
+    co2_ambdf$cvloo    <- co2_ambdf$mean
+    co2_ambdf$cv5rmse  <- co2_ambdf$mean
+    co2_ambdf$cv5mae   <- co2_ambdf$mean
+    
     for (i in 1:length(var_inds_in_calperiod)) {
 
       d13C_ambdf$mean_cal[var_inds_in_calperiod[[i]]] <- caldf$d13C_intercept[i] +
@@ -129,6 +144,8 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
       d13C_ambdf$max[var_inds_in_calperiod[[i]]]  <- caldf$d13C_intercept[i] +
         d13C_ambdf$max[var_inds_in_calperiod[[i]]] * caldf$d13C_slope[i]
 
+     # d13C_ambdf$cvloo[var_inds_in_calperiod[[i]]] <-  
+      
       co2_ambdf$mean_cal[var_inds_in_calperiod[[i]]] <- caldf$co2_intercept[i] +
         co2_ambdf$mean[var_inds_in_calperiod[[i]]] * caldf$co2_slope[i]
 
