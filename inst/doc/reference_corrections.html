@@ -39,101 +39,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
 
 
-<style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
 
 
 
@@ -334,7 +239,119 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NEONiso)</span></code></pre></div>
+<p>date: 2022-09-21</p>
+<p>There are several instances across the atmospheric isotope
+measurements made by NEON where there appears to be a disconnect between
+the “known” isotope ratio (and in the case of CO2, the mixing ratio) of
+the reference materials used. NEONiso attempts to correct these to
+maximize data coverage, primarily through: a) analysis of time series
+plots of reference and measured values of validation gases, and/or b)
+consultation with NEON staff.</p>
+<p>As of version 0.6.0, these corrections are only applied to carbon
+isotopes, as the water isotope calibration functions are still
+experimental and have known deficiencies.</p>
+<p>The list of carbon isotope reference material corrections can be
+accessed using the ‘carb’ data object bundled with NEONiso:</p>
+<pre><code>#&gt; # A tibble: 27 × 11
+#&gt;    site  refGas  startDate           co2_old co2_corr co2_repairedRaw d13C_old
+#&gt;    &lt;chr&gt; &lt;chr&gt;   &lt;dttm&gt;                &lt;dbl&gt;    &lt;dbl&gt; &lt;lgl&gt;              &lt;dbl&gt;
+#&gt;  1 ABBY  co2High 2019-10-03 00:00:00    509.      NA  FALSE              -9.65
+#&gt;  2 CLBJ  co2High 2020-01-09 00:00:00    508.      NA  FALSE              -9.26
+#&gt;  3 GRSM  co2High 2020-03-11 00:00:00    533.      NA  FALSE             -13.0 
+#&gt;  4 JERC  co2High 2019-11-13 00:00:00    525.      NA  FALSE             -10.4 
+#&gt;  5 JERC  co2High 2020-02-25 00:00:00    507.      NA  FALSE              -9.53
+#&gt;  6 MOAB  co2Low  2020-03-11 00:00:00    368.      NA  FALSE             -12.4 
+#&gt;  7 MOAB  co2Med  2020-03-11 00:00:00    444.      NA  FALSE              -9.06
+#&gt;  8 BARR  co2High 2018-06-01 00:00:00    425.     555. FALSE              -9.99
+#&gt;  9 BARR  co2Low  2018-06-01 00:00:00    386.     359. FALSE              -8.83
+#&gt; 10 BLAN  co2Low  2019-04-01 00:00:00    361.     363. FALSE              -8.54
+#&gt; 11 BLAN  co2Med  2019-04-01 00:00:00    414.     436. FALSE              -9.52
+#&gt; 12 BLAN  co2High 2019-04-01 00:00:00    509.     521. FALSE             -10.9 
+#&gt; 13 ONAQ  co2Low  2018-06-18 00:00:00    421.     367. FALSE              -9.38
+#&gt; 14 ONAQ  co2Med  2018-06-18 00:00:00    451.     412. FALSE             -10.6 
+#&gt; 15 ONAQ  co2High 2018-06-18 00:00:00    472.     467. FALSE             -13.0 
+#&gt; 16 ORNL  co2Low  2020-01-01 00:00:00    351      368. TRUE               -8.6 
+#&gt; 17 ORNL  co2Med  2019-11-14 00:00:00    530.     443. FALSE             -15.9 
+#&gt; 18 ORNL  co2High 2019-11-14 00:00:00    443.     530. FALSE             -10.6 
+#&gt; 19 SRER  co2Low  2018-04-01 00:00:00    385      356. TRUE               -9.15
+#&gt; 20 SRER  co2Med  2018-04-01 00:00:00    490      429. TRUE              -14.1 
+#&gt; 21 STER  co2Low  2019-01-16 00:00:00    351      360. FALSE              -8.5 
+#&gt; 22 TREE  co2Low  2020-01-01 00:00:00    345      369. TRUE               -8.9 
+#&gt; 23 TREE  co2Med  2020-01-01 00:00:00    395      438. TRUE               -9.9 
+#&gt; 24 TREE  co2High 2020-01-01 00:00:00    525      511. TRUE              -16.1 
+#&gt; 25 WOOD  co2Low  2018-06-18 00:00:00    363.     367. FALSE              -8.83
+#&gt; 26 WOOD  co2Med  2018-06-18 00:00:00    460.     413. FALSE             -10.5 
+#&gt; 27 WOOD  co2High 2018-06-18 00:00:00    564.     455. FALSE             -11.6 
+#&gt;    d13C_corr d13C_repairedRaw versionAdded
+#&gt;        &lt;dbl&gt; &lt;lgl&gt;                   &lt;dbl&gt;
+#&gt;  1     NA    FALSE                     0.6
+#&gt;  2     NA    FALSE                     0.6
+#&gt;  3     NA    FALSE                     0.6
+#&gt;  4     NA    FALSE                     0.6
+#&gt;  5     NA    FALSE                     0.6
+#&gt;  6     NA    FALSE                     0.6
+#&gt;  7     NA    FALSE                     0.6
+#&gt;  8    -11.5  FALSE                     0.4
+#&gt;  9     -8.61 FALSE                     0.4
+#&gt; 10     -8.96 FALSE                     0.4
+#&gt; 11    -10.1  FALSE                     0.4
+#&gt; 12    -15.4  FALSE                     0.4
+#&gt; 13     -9.05 FALSE                     0.4
+#&gt; 14     -9.10 FALSE                     0.4
+#&gt; 15    -10.5  FALSE                     0.4
+#&gt; 16     -9.05 TRUE                      0.4
+#&gt; 17    -10.6  FALSE                     0.6
+#&gt; 18    -15.6  FALSE                     0.6
+#&gt; 19     -8.70 TRUE                      0.4
+#&gt; 20    -10.4  TRUE                      0.4
+#&gt; 21     -8.76 TRUE                      0.4
+#&gt; 22     -9.18 TRUE                      0.4
+#&gt; 23    -10.3  TRUE                      0.4
+#&gt; 24    -14.8  TRUE                      0.4
+#&gt; 25     -9.27 FALSE                     0.4
+#&gt; 26     -9.45 FALSE                     0.4
+#&gt; 27    -10.4  FALSE                     0.4
+#&gt;    notes                                                              
+#&gt;    &lt;chr&gt;                                                              
+#&gt;  1 &lt;NA&gt;                                                               
+#&gt;  2 &lt;NA&gt;                                                               
+#&gt;  3 &lt;NA&gt;                                                               
+#&gt;  4 &lt;NA&gt;                                                               
+#&gt;  5 &lt;NA&gt;                                                               
+#&gt;  6 &lt;NA&gt;                                                               
+#&gt;  7 &lt;NA&gt;                                                               
+#&gt;  8 &lt;NA&gt;                                                               
+#&gt;  9 &lt;NA&gt;                                                               
+#&gt; 10 &lt;NA&gt;                                                               
+#&gt; 11 &lt;NA&gt;                                                               
+#&gt; 12 &lt;NA&gt;                                                               
+#&gt; 13 &lt;NA&gt;                                                               
+#&gt; 14 &lt;NA&gt;                                                               
+#&gt; 15 &lt;NA&gt;                                                               
+#&gt; 16 &lt;NA&gt;                                                               
+#&gt; 17 issue first corrected in 0.4, updated for 0.6 - still looks suspect
+#&gt; 18 issue first corrected in 0.4, updated for 0.6                      
+#&gt; 19 &lt;NA&gt;                                                               
+#&gt; 20 &lt;NA&gt;                                                               
+#&gt; 21 &lt;NA&gt;                                                               
+#&gt; 22 &lt;NA&gt;                                                               
+#&gt; 23 &lt;NA&gt;                                                               
+#&gt; 24 &lt;NA&gt;                                                               
+#&gt; 25 &lt;NA&gt;                                                               
+#&gt; 26 &lt;NA&gt;                                                               
+#&gt; 27 &lt;NA&gt;</code></pre>
+<p>This table lists, in order, a) the site affected; b) the reference
+gas affected; c) the start and end dates to which the correction is
+applied; d) the suspect CO2 reference mole fraction; e) the corrected
+CO2 mole fraction; f) logical of whether files recently pulled from the
+NEON data portal are expected to have the CO2 values already corrected;
+f) the suspect d13C value; g) the corrected d13C value; h) the version
+of NEONiso where that entry was added to the table; and i) any
+additional notes regarding the correction.</p>
+<p>Note that because this table may change over time, it is possible
+that calibrations performed by different versions of the code may change
+over time (though, hopefully for the better.) Please post any suspected
+missing values to the maintainer as issues on the GitHub repo.</p>
 
 
 

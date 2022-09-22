@@ -1,7 +1,7 @@
 Package: NEONiso
 Type: Package
 Title: Tools to Calibrate and Work with NEON Atmospheric Isotope Data
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(person("Rich", "Fiorella", email = "rfiorella@lanl.gov",
                 role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0824-4777")))
 Maintainer: Rich Fiorella <rfiorella@lanl.gov>
@@ -29,7 +29,7 @@ VignetteBuilder: knitr
 Language: en-US
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2022-08-08 15:24:24 UTC; rfiorella
+Packaged: 2022-09-22 19:14:25 UTC; rfiorella
 Author: Rich Fiorella [aut, cre] (<https://orcid.org/0000-0002-0824-4777>)
 Repository: CRAN
-Date/Publication: 2022-08-08 18:30:17 UTC
+Date/Publication: 2022-09-22 19:50:02 UTC
