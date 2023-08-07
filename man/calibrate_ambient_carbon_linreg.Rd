@@ -9,7 +9,6 @@ calibrate_ambient_carbon_linreg(
   caldf,
   outname,
   site,
-  file,
   filter_data = TRUE,
   force_to_end = TRUE,
   force_to_beginning = TRUE,
@@ -29,9 +28,6 @@ Will include all variables in 000_0x0_xxm. (character)}
 
 \item{site}{Four-letter NEON code corresponding to site being processed.}
 
-\item{file}{Output file name. Inherited from
-\code{calibrate_ambient_carbon_linreg}}
-
 \item{filter_data}{Apply median absolute deviation filter from Brock 86 to
 remove impulse spikes? Inherited from
 \code{calibrate_ambient_carbon_linreg}}
@@ -43,7 +39,7 @@ calibration, using the last calibration? (default true)}
 first calibration, using the first calibration? (default true)}
 
 \item{gap_fill_parameters}{Should function attempt to 'gap-fill' across a
-bad calibration by carrying the last known good calibration forward?
+bad calibration by carrying the last good calibration forward?
 Implementation is fairly primitive currently, as it only carries
 the last known good calibration that's available forward rather
 than interpolating, etc. Default FALSE.}
@@ -53,7 +49,8 @@ applied to ambient data.}
 }
 \value{
 Nothing to environment; returns calibrated ambient observations to
-the output file. This function is not designed to be called on its own,
+the function orchestrating calibration (calibrate_carbon).
+This function is not designed to be called on its own,
 and is not exported to the namespace.
 }
 \description{

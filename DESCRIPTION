@@ -1,7 +1,7 @@
 Package: NEONiso
 Type: Package
 Title: Tools to Calibrate and Work with NEON Atmospheric Isotope Data
-Version: 0.6.1
+Version: 0.6.2
 Authors@R: c(person("Rich", "Fiorella", email = "rfiorella@lanl.gov",
                 role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0824-4777")))
 Maintainer: Rich Fiorella <rfiorella@lanl.gov>
@@ -18,18 +18,18 @@ Description: Functions for downloading,
     and should be considered very experimental currently.
 License: GPL-3
 BugReports: https://github.com/lanl/NEONiso/issues
-URL: https://github.com/lanl/NEONiso
+URL: https://github.com/lanl/NEONiso, https://lanl.github.io/NEONiso/
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: dplyr, zoo, httr, lubridate, neonUtilities (>= 2.0.1),
         magrittr, rhdf5 (>= 2.33.7), R.utils, tidyselect, data.table,
         rlang, lifecycle, caret, ggplot2, gridExtra
-Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0), fasttime
 VignetteBuilder: knitr
 Language: en-US
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2022-09-22 19:14:25 UTC; rfiorella
+Packaged: 2023-08-07 03:18:11 UTC; rfiorella
 Author: Rich Fiorella [aut, cre] (<https://orcid.org/0000-0002-0824-4777>)
 Repository: CRAN
-Date/Publication: 2022-09-22 19:50:02 UTC
+Date/Publication: 2023-08-07 14:10:02 UTC

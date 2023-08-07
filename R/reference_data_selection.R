@@ -14,13 +14,14 @@
 #' @return Smaller data.frame where only the reference data selected
 #' to use in the calibration routines is returned. Assumes that we are
 #' calibrating on a daily basis, and not on a longer time scale. Data
-#' are selected based on two criteria: cannot be missing, and must be 
+#' are selected based on two criteria: cannot be missing, and must be
 #' at least a certain number of high-frequency observations in order to
 #' qualify as a valid measurement. For the water system, this function
 #' also keeps only the last three injections for each reference water
 #' per day.
 #'
 #' @importFrom utils tail
+#' @importFrom magrittr %>%
 #' @import dplyr
 #'
 select_daily_reference_data <- function(standard_df,
@@ -36,10 +37,12 @@ select_daily_reference_data <- function(standard_df,
   if (analyte == "co2") {
 
     standard_df <- standard_df %>%
-      dplyr::mutate(date = lubridate::date(.data$timeBgn)) %>% # get day of month
+      # get day of month
+      dplyr::mutate(date = lubridate::date(.data$timeBgn)) %>%
       dplyr::group_by(.data$date, .data$verticalPosition) %>%
       # check to make sure peak sufficiently long, then slice off single.
-      dplyr::filter(.data$dlta13CCo2.numSamp > min_nobs | is.na(.data$dlta13CCo2.numSamp)) %>%
+      dplyr::filter(.data$dlta13CCo2.numSamp > min_nobs |
+                    is.na(.data$dlta13CCo2.numSamp)) %>%
       dplyr::slice(1) %>%
       dplyr::ungroup() %>%
       dplyr::select(-"date") %>%
@@ -48,16 +51,18 @@ select_daily_reference_data <- function(standard_df,
   } else if (analyte == "h2o") {
 
     standard_df <- standard_df %>%
-      dplyr::mutate(date = lubridate::date(.data$d18O_meas_btime)) %>% # get day of month
+    # get day of month
+      dplyr::mutate(date = lubridate::date(.data$d18O_meas_btime)) %>%
       dplyr::group_by(.data$date) %>%
       dplyr::filter(.data$d18O_meas_n > min_nobs | is.na(.data$d18O_meas_n)) %>%
-      dplyr::slice(tail(row_number(), 3)) %>%
+      dplyr::slice(tail(dplyr::row_number(), 3)) %>%
       dplyr::ungroup() %>%
       dplyr::select(-"date")
 
   } else {
 
-    stop("invalid analyte selected in select_reference_data. please change to 'co2' or 'h2o'")
+    stop("invalid analyte selected in select_reference_data. 
+         please change to 'co2' or 'h2o'")
 
   }
 

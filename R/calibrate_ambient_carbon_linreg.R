@@ -1,4 +1,4 @@
-  #' calibrate_ambient_carbon_linreg
+#' calibrate_ambient_carbon_linreg
 #'
 #' @author Rich Fiorella \email{rfiorella@@lanl.gov}
 #'
@@ -14,8 +14,6 @@
 #' @param outname Output variable name. Inherited from
 #'             `calibrate_ambient_carbon_linreg`
 #' @param site Four-letter NEON code corresponding to site being processed.
-#' @param file Output file name. Inherited from
-#'             `calibrate_ambient_carbon_linreg`
 #' @param filter_data Apply median absolute deviation filter from Brock 86 to
 #'             remove impulse spikes? Inherited from
 #'             `calibrate_ambient_carbon_linreg`
@@ -25,14 +23,15 @@
 #'             first calibration, using the first calibration? (default true)
 #' @param r2_thres Minimum r2 value for calibration to be considered "good" and
 #'             applied to ambient data.
-#' @param gap_fill_parameters Should function attempt to 'gap-fill' across a 
-#'            bad calibration by carrying the last known good calibration forward?
-#'            Implementation is fairly primitive currently, as it only carries 
+#' @param gap_fill_parameters Should function attempt to 'gap-fill' across a
+#'            bad calibration by carrying the last good calibration forward?
+#'            Implementation is fairly primitive currently, as it only carries
 #'            the last known good calibration that's available forward rather
 #'            than interpolating, etc. Default FALSE.
 #'
 #' @return Nothing to environment; returns calibrated ambient observations to
-#'     the output file. This function is not designed to be called on its own,
+#'     the function orchestrating calibration (calibrate_carbon).
+#'     This function is not designed to be called on its own,
 #'     and is not exported to the namespace.
 #'
 #' @importFrom magrittr %>%
@@ -41,7 +40,6 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
                                             caldf,
                                             outname,
                                             site,
-                                            file,
                                             filter_data = TRUE,
                                             force_to_end = TRUE,
                                             force_to_beginning = TRUE,
@@ -125,13 +123,13 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
     co2_ambdf$mean_cal  <- co2_ambdf$mean
 
     # add columns to d13C_ambdf and co2_ambdf for uncertainty calculation
-    d13c_ambdf$cvloo   <- d13c_ambdf$mean
-    d13c_ambdf$cv5rmse <- d13c_ambdf$mean
-    d13c_ambdf$cv5mae  <- d13c_ambdf$mean
+    d13c_ambdf$cvloo   <- rep(NA, length(d13c_ambdf$mean))
+    d13c_ambdf$cv5rmse <- rep(NA, length(d13c_ambdf$mean))
+    d13c_ambdf$cv5mae  <- rep(NA, length(d13c_ambdf$mean))
 
-    co2_ambdf$cvloo    <- co2_ambdf$mean
-    co2_ambdf$cv5rmse  <- co2_ambdf$mean
-    co2_ambdf$cv5mae   <- co2_ambdf$mean
+    co2_ambdf$cvloo    <- rep(NA, length(co2_ambdf$mean))
+    co2_ambdf$cv5rmse  <- rep(NA, length(co2_ambdf$mean))
+    co2_ambdf$cv5mae   <- rep(NA, length(co2_ambdf$mean))
 
     for (i in 1:length(var_inds_in_calperiod)) {
 
@@ -144,7 +142,8 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
       d13c_ambdf$max[var_inds_in_calperiod[[i]]]  <- caldf$d13C_intercept[i] +
         d13c_ambdf$max[var_inds_in_calperiod[[i]]] * caldf$d13C_slope[i]
 
-     # d13C_ambdf$cvloo[var_inds_in_calperiod[[i]]] <-
+      d13c_ambdf$cvloo[var_inds_in_calperiod[[i]]] <- caldf$d13C_cvloo[i]
+      d13c_ambdf$cv5rmse[var_inds_in_calperiod[[i]]] <- caldf$d13C_cv5rmse[i]
 
       co2_ambdf$mean_cal[var_inds_in_calperiod[[i]]] <- caldf$co2_intercept[i] +
         co2_ambdf$mean[var_inds_in_calperiod[[i]]] * caldf$co2_slope[i]
@@ -155,6 +154,8 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
       co2_ambdf$max[var_inds_in_calperiod[[i]]]  <- caldf$co2_intercept[i] +
         co2_ambdf$max[var_inds_in_calperiod[[i]]] * caldf$co2_slope[i]
 
+      co2_ambdf$cvloo[var_inds_in_calperiod[[i]]] <- caldf$co2_cvloo[i]
+      co2_ambdf$cv5rmse[var_inds_in_calperiod[[i]]] <- caldf$co2_cv5rmse[i]
     }
 
     # round variance down to 2 digits
@@ -164,13 +165,13 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
     # apply median filter to data
     if (filter_data == TRUE) {
 
-      d13c_ambdf$mean_cal <- filter_median_Brock86(d13c_ambdf$mean_cal)
-      d13c_ambdf$min      <- filter_median_Brock86(d13c_ambdf$min)
-      d13c_ambdf$max      <- filter_median_Brock86(d13c_ambdf$max)
+      d13c_ambdf$mean_cal <- filter_median_brock86(d13c_ambdf$mean_cal)
+      d13c_ambdf$min      <- filter_median_brock86(d13c_ambdf$min)
+      d13c_ambdf$max      <- filter_median_brock86(d13c_ambdf$max)
 
-      co2_ambdf$mean_cal <- filter_median_Brock86(co2_ambdf$mean_cal)
-      co2_ambdf$min      <- filter_median_Brock86(co2_ambdf$min)
-      co2_ambdf$max      <- filter_median_Brock86(co2_ambdf$max)
+      co2_ambdf$mean_cal <- filter_median_brock86(co2_ambdf$mean_cal)
+      co2_ambdf$min      <- filter_median_brock86(co2_ambdf$min)
+      co2_ambdf$max      <- filter_median_brock86(co2_ambdf$max)
 
     }
 

@@ -13,6 +13,10 @@
 #'         stable isotope standard. VSMOW for water,
 #'         VPDB for carbon.
 #'
+#' @export
+#' @examples
+#' get_Rstd("carbon") # returns 0.0111797
+#' get_Rstd("oxygen") # returns 2005.20e-6
 #'
 get_Rstd <- function(element) {
   # return the standard isotope ratio
@@ -62,8 +66,8 @@ R_to_delta <- function(R_values, element) {
 #' @return Vector of isotope ratios (R values).
 #'
 #' @export
-#' @examples 
-#' delta_to_R(delta_values = 0, element = 'oxygen') # returns 2005.2e-6 for VSMOW.
+#' @examples
+#' delta_to_R(delta_values = 0, element = 'oxygen') # 2005.2e-6 for VSMOW.
 #'
 delta_to_R <- function(delta_values, element) {
 

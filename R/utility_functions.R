@@ -92,6 +92,9 @@ water_isotope_sites <- function() {
 #' @param sites Which sites to retrieve data from? Default will be all sites
 #'              with available data, but can specify a single site or a vector
 #'              here.
+#' @param release Download data corresponding to a specific release? Defaults to 
+#'              "RELEASE-2023." To download all data, including provisional data,
+#'              set to NULL.
 #' @export
 #'
 #' @return Returns nothing to the environment, but will download new NEON HDF5
@@ -104,8 +107,14 @@ manage_local_EC_archive <- function(file_dir,
                                     unzip_files = TRUE,
                                     trim = FALSE,
                                     dry_run = TRUE,
-                                    sites = "all") {
-
+                                    sites = "all",
+                                    release = "RELEASE-2023") {
+  if (!is.null(release)) {
+    file_dir2 <- paste(file_dir, release, sep = "/")
+  } else {
+    file_dir2 <- file_dir
+  }
+  
   if (get == TRUE) {
 
     # script to pull down EC data files.
@@ -141,12 +150,23 @@ manage_local_EC_archive <- function(file_dir,
       }
 
       # get a vector of site months available for site i
-      site_months <- unlist(available$data$siteCodes[[i]]$availableMonths)
+      if (!is.null(release)) {
+        releaseIndex <- which(
+                          sapply(available$data$siteCodes[[i]]$availableReleases,
+                                "[[",
+                                1) == release)
+        site_months <- unlist(available$data$siteCodes[[i]]$availableReleases[[releaseIndex]]$availableMonths)
+      } else {
+        site_months <- unlist(available$data$siteCodes[[i]]$availableMonths)
+      }
 
       # okay, check to see if data folder exists for site, otherwise create.
-      ifelse(!dir.exists(paste(file_dir, site_name, sep = "/")),
-             dir.create(paste(file_dir, site_name, sep = "/")), FALSE)
-
+      
+      ifelse(!dir.exists(paste(file_dir2, site_name, sep = "/")),
+             dir.create(paste(file_dir2, site_name, sep = "/"),
+                        recursive = TRUE), 
+             FALSE)
+      
       # okay - now loop through months and get the data files.
       if (!is.null(length(site_months))) {
 
@@ -176,15 +196,25 @@ manage_local_EC_archive <- function(file_dir,
             if (!length(dl_names[k]) == 0) {
               if (!is.na(dl_names[k])) {
                 # check to see if file exists in folder
-                if (file.exists(paste0(file_dir, site_name, "/", dl_names[k])) | # check for zipped or unzipped
-                    file.exists(paste0(file_dir, site_name, "/",
-                                       substr(dl_names[k], 1, nchar(dl_names[k]) - 3)))) {
+                if (file.exists(paste0(file_dir2, "/",
+                                       site_name,
+                                       "/",
+                                       dl_names[k])) |
+                    file.exists(paste0(file_dir2, "/",
+                                       site_name,
+                                       "/",
+                                       substr(dl_names[k],
+                                              1,
+                                              nchar(dl_names[k]) - 3)
+                                      )
+                                )
+                ) {
                   print(paste(dl_names[k], "exists...skipping..."))
                   next
                 } else { #doesn't exist, so download it.
                   print(paste("Downloading", dl_names[k]))
                   httr::GET(url = dl_urls[k],
-                            httr::write_disk(paste0(file_dir,
+                            httr::write_disk(paste0(file_dir2, "/",
                                                     site_name,
                                                     "/",
                                                     dl_names[k]),
@@ -205,7 +235,7 @@ manage_local_EC_archive <- function(file_dir,
   # unzip files if requested.
   if (get == TRUE & unzip_files == TRUE) {
     # list the files in file_dir
-    files <- list.files(path = paste0(file_dir, "/"),
+    files <- list.files(path = paste0(file_dir2, "/"),
                         pattern = "*.gz",
                         recursive = TRUE,
                         full.names = TRUE)
@@ -219,7 +249,7 @@ manage_local_EC_archive <- function(file_dir,
 
   if (trim == TRUE) {
     # list the files in file_dir
-    files <- list.files(path = file_dir,
+    files <- list.files(path = file_dir2,
                         pattern = "*.h5",
                         recursive = TRUE,
                         full.names = TRUE)
@@ -271,10 +301,12 @@ manage_local_EC_archive <- function(file_dir,
                  # so need to determine which is the most recent file.
           for (i in 1:length(unique(dup_yrmn))) {
             # get times associated w/ particular duplicate.
-            h5_times <- as.POSIXct(dup_fdiff[dup_yrmn == unique(dup_yrmn)[i]], format = "%Y%m%dT%H%M%SZ")
+            h5_times <- as.POSIXct(dup_fdiff[dup_yrmn == unique(dup_yrmn)[i]],
+                                   format = "%Y%m%dT%H%M%SZ")
             # determine which files are not the most recent.
             # get file names for only this yrmn.
-            dups_yrmn <- dup_candidates[(dup_yrmn == unique(dup_yrmn)[i]) & (h5_times != max(h5_times))]
+            dups_yrmn <- dup_candidates[(dup_yrmn == unique(dup_yrmn)[i]) &
+                                        (h5_times != max(h5_times))]
             # print which files to remove
             print(paste("Removing:", dups_yrmn))
             if (!dry_run) {
