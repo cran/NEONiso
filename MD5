@@ -1,7 +1,7 @@
-6d27f5ec7646f6cfa6e1cdc919ec903c *DESCRIPTION
+113e660158f6e6d965540713b5af5394 *DESCRIPTION
 150bf2c31b94a96bceb58a8bad93a557 *NAMESPACE
-8188fa5a74f87e000f540c0385f6ee7b *NEWS.md
-028ba6eae5c5d480efc851152b2248b7 *R/NEONiso.R
+dfd78c746c8829750e62526d4ab34b45 *NEWS.md
+de49a8af5b2626d8e794579095be2338 *R/NEONiso-package.R
 f02041382128bbe302923b67a6f8f5be *R/calibrate_ambient_carbon_Bowling2003.R
 4327dd570f9b065ad549ab9ee58b140d *R/calibrate_ambient_carbon_linreg.R
 d950a6f5faa0f3e58d5864b999e8c839 *R/calibrate_ambient_water_isotopes.R
@@ -24,6 +24,7 @@ dc61f265c98f89dd18078454154f8767 *R/reference_data_regression.R
 5c8a352c9a36de8c2296cbe0fe6fc518 *R/time_functions.R
 4c2616dba1a9d514b1cd32991c64f156 *R/utility_functions.R
 48a82bd8087916f9f4b6b4c25e7bc679 *README.md
+7080893e02c49cd296d4424b9be55069 *build/partial.rdb
 ce5773bdde80ee52de544e57f8fd7389 *build/vignette.rds
 c04b7d772fb0c21624037131d44124b3 *inst/CITATION
 4f2fe38c42ca06044ef680e67faf2a95 *inst/doc/example_workflow.R
@@ -37,7 +38,7 @@ f6a74a6aa07be41188d845061fd7d7e9 *inst/doc/reference_corrections.Rmd
 c7db71de3daa7bb521b0b7625c26bc4d *inst/extdata/NEON.D15.ONAQ.DP4.00200.001.nsae.2020-06-01.basic.packed.h5
 b42c046919200d89eb0ea551801bce2d *inst/extdata/NEON.D15.ONAQ.DP4.00200.001.nsae.2020-06-02.basic.packed.h5
 352ffe3cf941d8fa3a105dba419c3f02 *inst/extdata/NEON.D15.ONAQ.DP4.00200.001.nsae.2020-06-03.basic.packed.h5
-0cafd5dbdebf1969370493adac335fec *man/NEONiso.Rd
+02b09bc2516e825260f3d53beaa444b3 *man/NEONiso-package.Rd
 2231eb95c929b89dc40da2a3883915e1 *man/R_to_delta.Rd
 41670b1e06452319298498d77505783d *man/calculate_12CO2.Rd
 ab4659af52c5279e858a1b3f8a1d4b37 *man/calculate_13CO2.Rd
