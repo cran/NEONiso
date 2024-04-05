@@ -73,7 +73,7 @@
 #' @param r2_thres Minimum r2 threshold of an "acceptable" calibration. Acts to
 #'            remove calibration periods where a measurement error makes
 #'            relationship nonlinear. Default = 0.95
-#' @param correct_refData NEON has indicated there are a few instances where
+#' @param correct_ref_data NEON has indicated there are a few instances where
 #'            reported d13C or CO2 reference values are wrong. If set to true,
 #'            correct known incorrect values. This argument will (hopefully,
 #'            eventually) go away after NEON has fixed the reference database.
@@ -93,9 +93,12 @@
 #' @param plot_regression_data Default false; this is useful for diagnostics.
 #' @param plot_directory Only used if plot_regression_data is TRUE, but specify
 #'        where to write out diagnostic plot of regression data.
-#' @param avg The averaging interval to extract, in minutes. Default 9, but will
-#'        change to 6 eventually.
-#' @param min_nobs Minimum number of high-frequency observations to define a peak.
+#' @param avg The averaging interval to extract, in minutes. Default 6.
+#' @param min_nobs Minimum number of high-frequency observations to define
+#'                 a peak.
+#' @param standards Which reference gases (standards) to use? Default is all,
+#'        but can pass a subset of "co2Low", "co2Med", and "co2High" as a vector
+#'        to this argument as well.
 #'
 #'
 #' @return Returns nothing to the environment, but creates a new output HDF5
@@ -123,13 +126,16 @@ calibrate_carbon         <- function(inname,
                                      gap_fill_parameters = FALSE,
                                      filter_ambient = TRUE,
                                      r2_thres = 0.95,
-                                     correct_refData = TRUE,
+                                     correct_ref_data = TRUE,
                                      write_to_file = TRUE,
                                      remove_known_bad_months = TRUE,
                                      plot_regression_data = FALSE,
                                      plot_directory = NULL,
-                                     avg = 9,
-                                     min_nobs = NA) {
+                                     avg = 6,
+                                     min_nobs = NA,
+                                     standards = c("co2Low",
+                                                   "co2Med",
+                                                   "co2High")) {
 
   if (remove_known_bad_months) {
     if (site == "UNDE") {
@@ -145,13 +151,18 @@ calibrate_carbon         <- function(inname,
   #-----------------------------------------------------------
   # Extract reference data from input HDF5 file.
   #-----------------------------------------------------------
-  ciso <- ingest_data(inname, analyte = "Co2", avg = avg)
+
+  ciso <- ingest_data(inname,
+                      analyte = "Co2",
+                      amb_avg = avg,
+                      ref_avg = avg)
 
   # extract the data we need from ciso list
-  refe <-  extract_carbon_calibration_data(ciso$refe_stacked)
+  refe <-  extract_carbon_cal_data(ciso$refe_stacked,
+                                   standards = standards)
 
   # Okay this function now needs some work. *************
-  if (correct_refData == TRUE) {
+  if (correct_ref_data == TRUE) {
 
     # do some work to correct the reference data frame
     refe <- correct_carbon_ref_cval(refe, site)
@@ -163,7 +174,7 @@ calibrate_carbon         <- function(inname,
     ciso$reference <- lapply(names(ciso$reference),
                              function(x) {
                                ciso$reference[[x]] <- correct_carbon_ref_output(
-                                ciso$reference[[x]], site = site, refGas = x)
+                                ciso$reference[[x]], site = site, ref_gas = x)
                              })
 
     names(ciso$reference) <- tmp_names
@@ -177,39 +188,39 @@ calibrate_carbon         <- function(inname,
                                   site = site,
                                   min_nobs = min_nobs)
 
-#----------------------------------------------------------------------------
-#  calibrate ambient data.
-#  extract ambient measurements from ciso
+  #----------------------------------------------------------------------------
+  #  calibrate ambient data.
+  #  extract ambient measurements from ciso
 
   ciso_subset <- c(ciso$ambient, ciso$reference)
 
   if (method == "Bowling_2003") {
 
-    ciso_subset_cal <- lapply(names(ciso_subset),
-                              function(x) {
-                                calibrate_ambient_carbon_Bowling2003(
-                                  amb_data_list = ciso_subset[[x]],
-                                  caldf = cal_df,
-                                  site = site,
-                                  filter_data = filter_ambient,
-                                  force_to_end = force_cal_to_end,
-                                  force_to_beginning = force_cal_to_beginning,
-                                  r2_thres = r2_thres)
-                              })
+    ciso_subset_cal <-
+      lapply(names(ciso_subset),
+             function(x) {
+               calibrate_ambient_carbon_Bowling2003(amb_data_list = ciso_subset[[x]],
+                                                    caldf = cal_df,
+                                                    site = site,
+                                                    filter_data = filter_ambient,
+                                                    force_to_end = force_cal_to_end,
+                                                    force_to_beginning = force_cal_to_beginning,
+                                                    r2_thres = r2_thres)
+             })
 
   } else if (method == "linreg") {
 
-    ciso_subset_cal <- lapply(names(ciso_subset),
-                              function(x) {
-                                calibrate_ambient_carbon_linreg(
-                                  amb_data_list = ciso_subset[[x]],
-                                  caldf = cal_df,
-                                  site = site,
-                                  filter_data = filter_ambient,
-                                  force_to_end = force_cal_to_end,
-                                  force_to_beginning = force_cal_to_beginning,
-                                  r2_thres = r2_thres)
-                              })
+    ciso_subset_cal <-
+      lapply(names(ciso_subset),
+             function(x) {
+               calibrate_ambient_carbon_linreg(amb_data_list = ciso_subset[[x]],
+                                               caldf = cal_df,
+                                               site = site,
+                                               filter_data = filter_ambient,
+                                               force_to_end = force_cal_to_end,
+                                               force_to_beginning = force_cal_to_beginning,
+                                               r2_thres = r2_thres)
+             })
   }
 
   names(ciso_subset_cal) <- names(ciso_subset)
@@ -228,14 +239,14 @@ calibrate_carbon         <- function(inname,
     # one last invocation of hdf5 close all, for good luck
     rhdf5::h5closeAll()
   } else { #export output directly
-    outData <- list()
+    out_data <- list()
     #convert time to NEON HDF5 time
     cal_df$timeBgn <- convert_POSIXct_to_NEONhdf5_time(cal_df$timeBgn)
     cal_df$timeEnd <- convert_POSIXct_to_NEONhdf5_time(cal_df$timeEnd)
-    outData$ciso_subset_cal <- ciso_subset_cal
-    outData$cal_df <- cal_df
+    out_data$ciso_subset_cal <- ciso_subset_cal
+    out_data$cal_df <- cal_df
 
-    return(outData)
+    return(out_data)
 
   }
 

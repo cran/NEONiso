@@ -15,13 +15,14 @@ calibrate_carbon(
   gap_fill_parameters = FALSE,
   filter_ambient = TRUE,
   r2_thres = 0.95,
-  correct_refData = TRUE,
+  correct_ref_data = TRUE,
   write_to_file = TRUE,
   remove_known_bad_months = TRUE,
   plot_regression_data = FALSE,
   plot_directory = NULL,
-  avg = 9,
-  min_nobs = NA
+  avg = 6,
+  min_nobs = NA,
+  standards = c("co2Low", "co2Med", "co2High")
 )
 }
 \arguments{
@@ -62,7 +63,7 @@ to remove impulse spikes in output ambient data?
 remove calibration periods where a measurement error makes
 relationship nonlinear. Default = 0.95}
 
-\item{correct_refData}{NEON has indicated there are a few instances where
+\item{correct_ref_data}{NEON has indicated there are a few instances where
 reported d13C or CO2 reference values are wrong. If set to true,
 correct known incorrect values. This argument will (hopefully,
 eventually) go away after NEON has fixed the reference database.
@@ -81,10 +82,14 @@ remain in archive.}
 \item{plot_directory}{Only used if plot_regression_data is TRUE, but specify
 where to write out diagnostic plot of regression data.}
 
-\item{avg}{The averaging interval to extract, in minutes. Default 9, but will
-change to 6 eventually.}
+\item{avg}{The averaging interval to extract, in minutes. Default 6.}
 
-\item{min_nobs}{Minimum number of high-frequency observations to define a peak.}
+\item{min_nobs}{Minimum number of high-frequency observations to define
+a peak.}
+
+\item{standards}{Which reference gases (standards) to use? Default is all,
+but can pass a subset of "co2Low", "co2Med", and "co2High" as a vector
+to this argument as well.}
 }
 \value{
 Returns nothing to the environment, but creates a new output HDF5

@@ -13,59 +13,61 @@ fin <- system.file("extdata",
                    "NEON.D15.ONAQ.DP4.00200.001.nsae.2019-05.basic.packed.h5",
                    package = "NEONiso", mustWork = TRUE)
 
-fout <- "/dev/null"
+fout1 <- tempfile()
+fout2 <- tempfile()
 
-test_that("calibrate_carbon returns 'Extracting data' if write_to_file=FALSE", {
+test_that("calibrate_carbon returns no error", {
 
   skip_on_cran()
   # these tests could probably be made more useful!!
-  expect_output(calibrate_carbon(fin, fout, "ONAQ",
-                   method = "Bowling_2003",
-                   calibration_half_width = 0.5,
-                   force_cal_to_beginning = TRUE,
-                   force_cal_to_end = TRUE,
-                   gap_fill_parameters = FALSE,
-                   filter_ambient = TRUE,
-                   r2_thres = 0.95,
-                   correct_refData = TRUE,
-                   write_to_file = FALSE), "Extracting data")
+  expect_no_error(calibrate_carbon(fin, fout1, "ONAQ",
+                                   method = "Bowling_2003",
+                                   calibration_half_width = 0.5,
+                                   force_cal_to_beginning = TRUE,
+                                   force_cal_to_end = TRUE,
+                                   gap_fill_parameters = FALSE,
+                                   filter_ambient = TRUE,
+                                   r2_thres = 0.95,
+                                   correct_ref_data = TRUE,
+                                   write_to_file = TRUE))
 
-  expect_output(calibrate_carbon(fin, fout, "ONAQ",
-                   method = "linreg",
-                   calibration_half_width = 0.5,
-                   force_cal_to_beginning = TRUE,
-                   force_cal_to_end = TRUE,
-                   gap_fill_parameters = FALSE,
-                   filter_ambient = TRUE,
-                   r2_thres = 0.95,
-                   correct_refData = TRUE,
-                   write_to_file = FALSE), "Extracting data")
+  expect_no_error(calibrate_carbon(fin, fout2, "ONAQ",
+                                   method = "linreg",
+                                   calibration_half_width = 0.5,
+                                   force_cal_to_beginning = TRUE,
+                                   force_cal_to_end = TRUE,
+                                   gap_fill_parameters = FALSE,
+                                   filter_ambient = TRUE,
+                                   r2_thres = 0.95,
+                                   correct_ref_data = TRUE,
+                                   write_to_file = TRUE))
 
+  # these tests could probably be made more useful!!
+  expect_no_error(calibrate_carbon(fin, "/dev/null", "ONAQ",
+                                   method = "Bowling_2003",
+                                   calibration_half_width = 0.5,
+                                   force_cal_to_beginning = TRUE,
+                                   force_cal_to_end = TRUE,
+                                   gap_fill_parameters = FALSE,
+                                   filter_ambient = TRUE,
+                                   r2_thres = 0.95,
+                                   correct_ref_data = TRUE,
+                                   write_to_file = FALSE))
 })
 
 
-test_that("calibrate_carbon_bymonth returns warning, as it is deprecated", {
+fout3 <- tempfile()
+
+test_that("calibrate_water returns no error", {
+
   skip_on_cran()
   # these tests could probably be made more useful!!
-  expect_warning(calibrate_carbon_bymonth(fin, fout, "ONAQ",
-                                 method = "Bowling_2003",
-                                 calibration_half_width = 0.5,
-                                 force_cal_to_beginning = TRUE,
-                                 force_cal_to_end = TRUE,
-                                 gap_fill_parameters = FALSE,
-                                 filter_ambient = TRUE,
-                                 r2_thres = 0.95,
-                                 correct_refData = TRUE,
-                                 write_to_file = FALSE))
+  expect_no_error(calibrate_water(fin, "/dev/null", "ONAQ",
+                                  correct_ref_data = TRUE,
+                                  write_to_file = FALSE))
 
-  expect_warning(calibrate_carbon_bymonth(fin, fout, "ONAQ",
-                                 method = "linreg",
-                                 calibration_half_width = 0.5,
-                                 force_cal_to_beginning = TRUE,
-                                 force_cal_to_end = TRUE,
-                                 gap_fill_parameters = FALSE,
-                                 filter_ambient = TRUE,
-                                 r2_thres = 0.95,
-                                 correct_refData = TRUE,
-                                 write_to_file = FALSE))
+  expect_no_error(calibrate_water(fin, fout3, "ONAQ",
+                                  correct_ref_data = TRUE,
+                                  write_to_file = TRUE))
+
 })

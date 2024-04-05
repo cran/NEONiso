@@ -386,10 +386,10 @@ JGR-Biogeosciences) [<a href="https://doi.org/10.1029/2020JG005862" class="uri">
 <p>The simplest way to interact with these functions is to place it
 inside of a for loop (or an apply statement), and call them for each
 file you would like to calibrate:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(fnames.out)) {</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(fnames_out)) {</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">calibrate_carbon_bymonth</span>(fnames[i],</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                           fnames.out[i],</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                           <span class="at">site=</span>site.code[i],</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                           fnames_out[i],</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                           <span class="at">site =</span> site_code[i],</span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>                           <span class="at">method =</span> <span class="st">&quot;Bowling_2003&quot;</span>)</span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>}</span></code></pre></div>
 <p>Two different methods to calibrate are available: a) a ‘gain and
@@ -401,9 +401,9 @@ assumes you have vectors of: 1) input file names (fnames), 2) output
 file names (fnames.out), and 3) 4 letter NEON site codes corresponding
 to each entry in input file names (fnames). An example of code to
 generate these three vectors is provided below:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>data.dir <span class="ot">&lt;-</span> <span class="st">&quot;/your/path/here/DP4_00200_001/&quot;</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="st">&quot;/your/path/here/DP4_00200_001/&quot;</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>fnames <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> data.dir,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>fnames <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> data_dir,</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                     <span class="at">pattern =</span> <span class="st">&quot;.h5&quot;</span>,</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                     <span class="at">recursive =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>                     <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
@@ -411,21 +411,21 @@ generate these three vectors is provided below:</p>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># unselect gz files.</span></span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>fnames <span class="ot">&lt;-</span> fnames[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">&quot;.gz&quot;</span>, fnames)]</span>
 <span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>fname.byfolder <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames, <span class="at">split=</span><span class="st">&quot;.&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>site.code  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fname.byfolder, <span class="st">&quot;[[&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>fname_byfolder <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames, <span class="at">split =</span> <span class="st">&quot;.&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>site_code  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fname_byfolder, <span class="st">&quot;[[&quot;</span>, <span class="dv">3</span>)</span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># inspect site.code in the environment: is it a vector with repeated &quot;ONAQ&quot;?</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>fnames.tmp <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;.h5&quot;</span>, <span class="st">&quot;.calibrated.h5&quot;</span>, fnames)</span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>fnames.spt <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames.tmp, <span class="at">split =</span> <span class="st">&quot;/&quot;</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>fnames.out <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fnames.spt, <span class="st">&quot;[[&quot;</span>, <span class="dv">7</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>fnames_tmp <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;.h5&quot;</span>, <span class="st">&quot;.calibrated.h5&quot;</span>, fnames)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>fnames_spt <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(fnames_tmp, <span class="at">split =</span> <span class="st">&quot;/&quot;</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>fnames_out <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fnames_spt, <span class="st">&quot;[[&quot;</span>, <span class="dv">7</span>)</span>
 <span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co"># create new output directory</span></span>
 <span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>outpaths   <span class="ot">&lt;-</span> <span class="fu">paste0</span>(your_path, <span class="st">&quot;/ONAQ/output/&quot;</span>)</span>
 <span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co"># apply function used here to generalize in case you wanted to run all sites</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">unique</span>(outpaths), dir.create, <span class="at">showWarnings=</span><span class="cn">FALSE</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">unique</span>(outpaths), dir.create, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a></span>
 <span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co"># update fnames.out to include desired output paths.</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>fnames.out <span class="ot">&lt;-</span> <span class="fu">paste0</span>(outpaths, <span class="st">&quot;/&quot;</span>, fnames.out)</span></code></pre></div>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>fnames_out <span class="ot">&lt;-</span> <span class="fu">paste0</span>(outpaths, <span class="st">&quot;/&quot;</span>, fnames_out)</span></code></pre></div>
 </div>
 </div>
 
