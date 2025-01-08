@@ -1,7 +1,7 @@
 Package: NEONiso
 Type: Package
 Title: Tools to Calibrate and Work with NEON Atmospheric Isotope Data
-Version: 0.7.0
+Version: 0.7.1
 Authors@R: c(person("Rich", "Fiorella", email = "rfiorella@lanl.gov",
                 role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0824-4777")))
 Maintainer: Rich Fiorella <rfiorella@lanl.gov>
@@ -15,12 +15,12 @@ Description: Functions for downloading,
     <doi:10.1029/2020JG005862>, and the readme 
     file at <https://github.com/lanl/NEONiso>. Tools for calibrating water 
     isotope products have been added as of 0.6.0, but have known deficiencies
-    and should be considered very experimental currently.
+    and should be considered experimental and unsupported.
 License: GPL-3
 BugReports: https://github.com/lanl/NEONiso/issues
 URL: https://github.com/lanl/NEONiso, https://lanl.github.io/NEONiso/
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Imports: dplyr, zoo, httr, lubridate, neonUtilities (>= 2.1.1),
         magrittr, rhdf5 (>= 2.33.7), R.utils, tidyselect, data.table,
         rlang, caret, ggplot2, gridExtra
@@ -29,7 +29,7 @@ VignetteBuilder: knitr
 Language: en-US
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2024-04-05 04:15:33 UTC; rfiorella
+Packaged: 2025-01-08 14:56:55 UTC; rfiorella
 Author: Rich Fiorella [aut, cre] (<https://orcid.org/0000-0002-0824-4777>)
 Repository: CRAN
-Date/Publication: 2024-04-05 04:42:58 UTC
+Date/Publication: 2025-01-08 15:20:02 UTC
