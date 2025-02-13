@@ -1,6 +1,6 @@
-ac202e2ba9fff2ca57d3c721486bff8b *DESCRIPTION
+ae2408e0ccfc529104ec16536227b5dc *DESCRIPTION
 78f7d01928fd97d191de455cc69d9ecf *NAMESPACE
-9a0935c0921cdc1a9f6138f75aac2945 *NEWS.md
+3a7d51b920194f81dc3456284a2b72a0 *NEWS.md
 92b8a2898bab26bc68c377554e409e35 *R/NEONiso-package.R
 2e5a12ae0a958dd2f98ed02fa20d340e *R/calibrate_ambient_carbon_gainoffset.R
 467e305e827ce2f06e3067caf2979b4b *R/calibrate_ambient_carbon_linreg.R
@@ -18,7 +18,7 @@ a7d9e5f772c8a5ae6c3bff0ee28863bd *R/quality_control.R
 46074cf75bd2d27dd9b9ea330b1e215e *R/standard_corrections.R
 5494286a7c87203d717b8c542df3b8b7 *R/sysdata.rda
 51495e0bf34f8fe4c8f671f25877b82d *R/time_functions.R
-83af9241bb44add12914dc27724640b9 *R/utility_functions.R
+faa3685b313415d2df1a818468a52e02 *R/utility_functions.R
 48a82bd8087916f9f4b6b4c25e7bc679 *README.md
 89cc0d13aa8e58a7d82bb7adda5178de *build/vignette.rds
 c04b7d772fb0c21624037131d44124b3 *inst/CITATION
