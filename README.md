@@ -9,14 +9,18 @@
 <!-- badges: end -->
 
 Author: Rich Fiorella
-October 31, 2022.
+Latest release: February 25, 2025.
 
 This repository contains an R package to calibrate NEON atmospheric isotope data. A stable version of the package can be installed from CRAN, and a development version of this package can be installed here using devtools (see below).
 
 Please report any issues you have, bugs found, or enhancement suggestions as issues to this repository.
 
 ## Installing the development version:
-1) You will need the rhdf5 package, which is not on CRAN. rhdf5 is available from bioconductor using:
+1) NEONiso requires an HDF5 package. The recommended option is hdf5r from CRAN:
+```R
+install.packages("hdf5r")
+```
+Alternatively, rhdf5 from Bioconductor also works:
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
