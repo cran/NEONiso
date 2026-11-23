@@ -32,7 +32,6 @@
 #'     This function is not designed to be called on its own,
 #'     and is not exported to the namespace.
 #'
-#' @importFrom magrittr %>%
 #'
 calibrate_ambient_carbon_linreg <- function(amb_data_list,
                                             caldf,
@@ -54,26 +53,35 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
   }
 
   # ensure that time variables are in POSIXct.
-  amb_start_times <- convert_NEONhdf5_to_POSIXct_time(d13c_ambdf$timeBgn)
   amb_end_times   <- convert_NEONhdf5_to_POSIXct_time(d13c_ambdf$timeEnd)
 
   # if force.to.end and/or force.to.beginning are true,
   # match out$start[1] to min(amb time)
   # and/or out$end[nrow] to max(amb time)
 
-  if (force_to_end == TRUE) {
-    caldf$end[nrow(caldf)] <- amb_end_times[length(amb_end_times)]
-  }
-  if (force_to_beginning == TRUE) {
-    caldf$start[1] <- amb_start_times[1]
+  # Ambient rows are matched to periods by their end time, so widen the
+  # first/last period to cover the earliest/latest ambient end time (never
+  # narrow it). Rows padded in for missing heights have NA times: na.rm.
+  # (Compared as numbers: the ambient times are GMT and caldf's are UTC, and
+  # combining the two in max()/min() warns about inconsistent tzone.)
+  if (nrow(caldf) > 0 && any(!is.na(amb_end_times))) {
+    last_amb  <- max(amb_end_times, na.rm = TRUE)
+    first_amb <- min(amb_end_times, na.rm = TRUE)
+    if (force_to_end == TRUE &&
+          as.numeric(last_amb) > as.numeric(caldf$timeEnd[nrow(caldf)])) {
+      caldf$timeEnd[nrow(caldf)] <- last_amb
+    }
+    if (force_to_beginning == TRUE &&
+          as.numeric(first_amb) < as.numeric(caldf$timeBgn[1])) {
+      caldf$timeBgn[1] <- first_amb
+    }
   }
 
   # determine which cal period each ambient data belongs to.
-  var_inds_in_calperiod <- list()
+  var_inds_in_calperiod <- calperiod_indices(amb_end_times,
+                                             caldf$timeBgn, caldf$timeEnd)
 
   for (i in seq_len(nrow(caldf))) {
-    int <- lubridate::interval(caldf$timeBgn[i], caldf$timeEnd[i])
-    var_inds_in_calperiod[[i]] <- which(amb_end_times %within% int)
 
     if (gap_fill_parameters) {
 
@@ -115,9 +123,11 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
 
   # calibrate data at this height.
   #-------------------------------------
-  # extract d13C and CO2 concentrations from the ambient data
-  d13c_ambdf$mean_cal <- d13c_ambdf$mean
-  co2_ambdf$mean_cal  <- co2_ambdf$mean
+  # calibrated values start as NA: rows outside every calibration period
+  # stay uncalibrated (NA) rather than carrying raw values. min and max are
+  # calibrated in place, so they are cleared for those rows after the loop.
+  d13c_ambdf$mean_cal <- rep(NA_real_, length(d13c_ambdf$mean))
+  co2_ambdf$mean_cal  <- rep(NA_real_, length(co2_ambdf$mean))
 
   # add columns to d13C_ambdf and co2_ambdf for uncertainty calculation
   d13c_ambdf$cvloo   <- rep(NA, length(d13c_ambdf$mean))
@@ -155,6 +165,12 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
     co2_ambdf$cv5rmse[var_inds_in_calperiod[[i]]] <- caldf$co2_cv5rmse[i]
   }
 
+  uncal <- setdiff(seq_along(d13c_ambdf$mean), unlist(var_inds_in_calperiod))
+  d13c_ambdf$min[uncal] <- NA
+  d13c_ambdf$max[uncal] <- NA
+  co2_ambdf$min[uncal]  <- NA
+  co2_ambdf$max[uncal]  <- NA
+
   # round variance down to 2 digits
   d13c_ambdf$vari <- round(d13c_ambdf$vari, digits = 2)
   co2_ambdf$vari <- round(co2_ambdf$vari, digits = 2)
@@ -176,6 +192,6 @@ calibrate_ambient_carbon_linreg <- function(amb_data_list,
   amb_data_list$dlta13CCo2 <- d13c_ambdf
   amb_data_list$rtioMoleDryCo2 <- co2_ambdf
 
-  return(amb_data_list)
+  amb_data_list
 
 }

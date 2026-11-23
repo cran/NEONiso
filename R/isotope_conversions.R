@@ -32,7 +32,7 @@ get_Rstd <- function(element) {
   } else if (element == "hydrogen") {
     r <- 155.76e-6 # SMOW 2H/1H ratio
   }
-  return(r)
+  r
 }
 
 #' Convert heavy-to-light isotope ratio to delta values.
@@ -60,7 +60,7 @@ R_to_delta <- function(R_values, element) {
   delta <- 1000 * (R_values / Rstd - 1)
 
   # return delta values
-  return(delta)
+  delta
 }
 
 #' Converts delta value to heavy-to-light isotope ratio
@@ -87,7 +87,7 @@ delta_to_R <- function(delta_values, element) {
   #convert R to delta
   R <- Rstd * (delta_values / 1000 + 1)
   # return delta values
-  return(R)
+  R
 
 }
 
@@ -123,7 +123,7 @@ calculate_12CO2 <- function(total_co2, delta13c, f = 0.00474) {
   light_co2 <- total_co2 * (1 - f) / (1 + r)
 
   # return 12co2
-  return(light_co2)
+  light_co2
 }
 
 #' Calculate 13C-CO2 Mole Fractions
@@ -152,11 +152,11 @@ calculate_13CO2 <- function(total_co2, delta13c, f = 0.00474) {
   # on calibration per Griffis et al. 2004.
 
   # calculate 13CO2 from total CO2 and R
-  light_co2 <- calculate_12CO2(total_co2, delta13c)
+  light_co2 <- calculate_12CO2(total_co2, delta13c, f = f)
 
   heavy_co2 <- total_co2 * (1 - f) - light_co2
 
   # return 13co2
-  return(heavy_co2)
+  heavy_co2
 
 }
